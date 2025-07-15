@@ -1,0 +1,6 @@
+*.class
+.vscode
+.idea
+*.yml
+out/*
+output/*
