@@ -1,7 +1,7 @@
-package practiceRubrikInterview;
+package practiceRubrikInterview.practice;
 
 
-/*
+/**
 Problem Statement:
 Let's say you have a playground where at max 10 person can be present at once
 1. All people in the playground should be from the same team.

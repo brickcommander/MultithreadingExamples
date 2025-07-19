@@ -1,4 +1,4 @@
-package practiceRubrikInterview;
+package practiceRubrikInterview.practice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +87,7 @@ public class MultithreadedDFS {
     }
 }
 
-/*
+/**
 Problem:
 - Suppose you're using a fixed thread pool with, say, 2 threads.
 - dfs(node) submits tasks for 3 children: A, B, and C.

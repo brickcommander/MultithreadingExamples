@@ -1,4 +1,4 @@
-package practiceRubrikInterview;
+package practiceRubrikInterview.practice;
 
 public class ProducerConsumerProblemTest {
     public static void main(String[] args) {

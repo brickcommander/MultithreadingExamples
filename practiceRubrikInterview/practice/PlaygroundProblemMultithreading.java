@@ -1,4 +1,4 @@
-package practiceRubrikInterview;
+package practiceRubrikInterview.practice;
 
 
 /*

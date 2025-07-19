@@ -1,4 +1,4 @@
-package practiceRubrikInterview;
+package practiceRubrikInterview.practice;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
