@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -18,12 +19,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * which can run currently.  As soon as a thread in executable queue finishes, pick the next job from task queue.
  */
 
-/**
- * NOTE: There is some bug the code.
- * 1. the program is not exiting
- * 2. the tasks are being picked from the queue and run ever after calling shutdown
- */
-
 class TaskScheduler2 {
     private final int concurrency;
     private final AtomicInteger runningTask = new AtomicInteger(0);
@@ -31,6 +26,7 @@ class TaskScheduler2 {
     private final List<Thread> executors;
     private final Lock queueLock;
     private final Condition check;
+    private final AtomicBoolean isShutdown;
 
     public void submitTask(Runnable task) {
         queueLock.lock();
@@ -43,6 +39,8 @@ class TaskScheduler2 {
     }
 
     public void shutdown() {
+        if(isShutdown.get()) return;
+        isShutdown.set(true);
         for(Thread t: executors) {
             t.interrupt();
         }
@@ -55,6 +53,7 @@ class TaskScheduler2 {
         executors = new ArrayList<>();
         queueLock = new ReentrantLock();
         check = queueLock.newCondition();
+        isShutdown = new AtomicBoolean(false);
 
         for(int i=0; i<concurrency; i++) {
             Thread t = new Thread(this::execute);
@@ -65,11 +64,11 @@ class TaskScheduler2 {
 
     private void execute() {
         System.out.println(Thread.currentThread().getName() + " executing...");
-        while(!Thread.currentThread().isInterrupted()) {
+        while(!isShutdown.get()) {
             Runnable task = null;
             queueLock.lock();
             try {
-                while (taskQueue.isEmpty() && !Thread.currentThread().isInterrupted()) {
+                while (taskQueue.isEmpty() && !isShutdown.get()) {
                     try {
                         check.await();
                     } catch (InterruptedException e) {
@@ -80,7 +79,7 @@ class TaskScheduler2 {
                 }
 
                 // Exit if interrupted before polling
-                if (Thread.currentThread().isInterrupted()) {
+                if (isShutdown.get()) {
                     return;
                 }
 
