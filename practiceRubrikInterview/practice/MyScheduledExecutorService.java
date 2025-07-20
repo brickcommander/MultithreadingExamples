@@ -112,6 +112,10 @@ public class MyScheduledExecutorService {
 
     public void shutdown() {
         shutdown.set(true);
+        for(Thread t: workers) {
+            t.interrupt();
+        }
+        System.out.println("Shutdown initiated.");
     }
 
     private void execute() {
@@ -156,9 +160,7 @@ public class MyScheduledExecutorService {
             System.out.println("Starting task " + Thread.currentThread().getName() + " " + System.currentTimeMillis());
             try {
                 Thread.sleep((long) (500 + 3000 * Math.random()));
-            } catch (InterruptedException e) {
-
-            }
+            } catch (InterruptedException e) {}
             System.out.println("Finished task " + Thread.currentThread().getName() + " " + System.currentTimeMillis());
         };
 
